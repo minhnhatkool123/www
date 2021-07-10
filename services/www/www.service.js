@@ -22,7 +22,7 @@ module.exports = {
 		// API Gateway route options
 		routeOptions: {
 			path: '/graphql',
-			cors: true,
+			cors: false,
 			mappingPolicy: 'restrict',
 			authentication: true,
 			authorization: true,
@@ -55,6 +55,21 @@ module.exports = {
 				onPreResponse: require('./hooks/onPreResponse.hook'),
 				onHasBody: require('./hooks/onHasBody.hook')
 			}
+		},
+
+		cors: {
+			// Configures the Access-Control-Allow-Origin CORS header.
+			origin: '*',
+			// Configures the Access-Control-Allow-Methods CORS header.
+			methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
+			// Configures the Access-Control-Allow-Headers CORS header.
+			allowedHeaders: '*', // ['*', 'Content-Type', 'x-api-key', 'x-api-validate', 'x-api-action', 'x-api-client', 'x-request-id', 'Authorization'],
+			// Configures the Access-Control-Expose-Headers CORS header.
+			exposedHeaders: ['*', 'x-api-key', 'x-api-validate', 'x-api-action', 'x-api-client'],
+			// Configures the Access-Control-Allow-Credentials CORS header.
+			credentials: true,
+			// Configures the Access-Control-Max-Age CORS header.
+			maxAge: 3600
 		},
 
 		// Global Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
