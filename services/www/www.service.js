@@ -22,7 +22,7 @@ module.exports = {
 		// API Gateway route options
 		routeOptions: {
 			path: '/graphql',
-			cors: false,
+			cors: true,
 			mappingPolicy: 'restrict',
 			authentication: true,
 			authorization: true,
@@ -38,7 +38,7 @@ module.exports = {
 		}
 	})],
 
-	dependencies: ['security'],
+	dependencies: [/*'security'*/],
 
 	// More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html
 	settings: {
@@ -63,7 +63,7 @@ module.exports = {
 			// Configures the Access-Control-Allow-Methods CORS header.
 			methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
 			// Configures the Access-Control-Allow-Headers CORS header.
-			allowedHeaders: '*', // ['*', 'Content-Type', 'x-api-key', 'x-api-validate', 'x-api-action', 'x-api-client', 'x-request-id', 'Authorization'],
+			allowedHeaders: ['*', 'Content-Type', 'x-api-key', 'x-api-validate', 'x-api-action', 'x-api-client', 'x-request-id', 'Authorization'],
 			// Configures the Access-Control-Expose-Headers CORS header.
 			exposedHeaders: ['*', 'x-api-key', 'x-api-validate', 'x-api-action', 'x-api-client'],
 			// Configures the Access-Control-Allow-Credentials CORS header.
