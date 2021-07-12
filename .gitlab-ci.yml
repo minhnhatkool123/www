@@ -1,7 +1,7 @@
 variables:
   GIT_STRATEGY: clone
   DEV_NAMESPACE: "api-pg"
-  SBX_NAMESPACE: "api-pg"
+  SBX_NAMESPACE: "paymentgateway"
   REGISTRY_GROUP: "pg-microservices"
 
 .rancher_deploy: &rancher_deploy
