@@ -13,7 +13,7 @@ module.exports = async function (req, res, content) {
 		const encryptKey = nanoid();
 		const key = new NodeRSA(rsaKey.publicKey);
 		const xAPIKey = key.encrypt(encryptKey, 'base64');
-		const xApiMessage = CryptoJS.AES.encrypt(JSON.stringify(content), encryptKey).toString();
+		const xApiMessage = CryptoJS.AES.encrypt(content, encryptKey).toString();
 		const accessToken = _.get(req.headers, 'authorization', '');
 		const objValidate = {
 			'x-api-action': xAPIAction,
