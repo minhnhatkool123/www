@@ -2,7 +2,9 @@ variables:
   GIT_STRATEGY: clone
   DEV_NAMESPACE: "api-pg"
   SBX_NAMESPACE: "paymentgateway"
+  PROD_NAMESPACE: "api-pg"
   REGISTRY_GROUP: "pg-microservices"
+
 
 .rancher_deploy: &rancher_deploy
   - export IMAGE_TAG=${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}
@@ -18,6 +20,7 @@ stages:
   - build_online
   - deploy_dev
   - deploy_sbx
+  - deploy_prod
 
 build_local:
   timeout: 300s
@@ -42,6 +45,7 @@ build_online:
     - docker tag $CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA $CI_PROD_REGISTRY$REGISTRY_GROUP/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA && docker push $CI_PROD_REGISTRY$REGISTRY_GROUP/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
   only:
     - release_sbx
+    - release_production
   tags:
     - production
   after_script:
@@ -76,3 +80,19 @@ deploy_sbx:
     - release_sbx
   script:
     - *rancher_deploy
+
+deploy_prod:
+  timeout: 60s
+  stage: deploy_prod
+  variables:
+    GIT_STRATEGY: none
+    REGISTRY_URL: "${CI_PROD_REGISTRY}"
+    RANCHER_CONTEXT: "${RANCHER_PROD_CONTEXT}"
+    RANCHER_NAMESPACE: $PROD_NAMESPACE
+  tags:
+    - dev
+  when: manual
+  only:
+    - release_production
+  script:
+    - *rancher_deploy    
