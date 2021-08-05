@@ -42,7 +42,7 @@
     "md5": "^2.3.0",
     "moleculer": "^0.14.14",
     "moleculer-apollo-server": "^0.3.4",
-    "moleculer-web-extends": "^0.9.1",
+    "moleculer-web-extends": "^0.9.3",
     "nanoid": "^3.1.23",
     "nats": "^1.4.12",
     "node-rsa": "^1.1.1",
