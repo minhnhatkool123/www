@@ -21,6 +21,7 @@ module.exports = function (req, res) {
 			throw new MoleculerError('Thông tin x-api-validate không chính xác (-9)', 400, null, null);
 		}
 		ctx.meta.security = {
+			type: securityConstant.TYPE.CHECKSUM,
 			credentials: req.security.info
 		};
 	} else {
@@ -50,6 +51,10 @@ module.exports = function (req, res) {
 			throw new MoleculerError('Thông tin mã hóa không chính xác (-8)', 400, null, null);
 		}
 		req.body = body;
+		ctx.meta.security = {
+			type: securityConstant.TYPE.RSA,
+			credentials: req.security.info
+		};
 	}
 
 	return true;
