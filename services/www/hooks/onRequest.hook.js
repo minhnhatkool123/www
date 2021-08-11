@@ -2,6 +2,7 @@ const _ = require('lodash');
 const NodeRSA = require('node-rsa');
 const CryptoJS = require('crypto-js');
 const { MoleculerError } = require('moleculer').Errors;
+const securityConstant = require('../constants/security.constant');
 
 module.exports = async function (req, res, securityURI) {
 	const ctx = req.$ctx;
@@ -13,16 +14,23 @@ module.exports = async function (req, res, securityURI) {
 		}
 	}
 	const xAPIKey = req.headers['x-api-key'];
-	const xAPIClient = req.headers['x-api-client'];
+	const xAPIClient = req.headers['x-api-client'] || '';
 	const xAPIAction = req.headers['x-api-action'];
 
-	if (!xAPIClient || !xAPIAction || !xAPIKey) {
-		throw new MoleculerError('Thông tin mã hóa không chính xác (-1)', 400, null, null);
-	}
-	const rsaKey = await ctx.broker.call('security.pick', {
+	const securityInfo = await ctx.broker.call('security.pick', {
 		xAPIClient
 	});
 
+	if (_.get(securityInfo, 'securityType', 'RSA') === securityConstant.TYPE.CHECKSUM) {
+		req.security = {
+			type: securityConstant.TYPE.CHECKSUM,
+			info: _.omit(securityInfo, ['securityType', 'secretKey']),
+			secretKey: securityInfo.secretKey
+		};
+		return true;
+	}
+
+	const rsaKey = securityInfo;
 	if (!rsaKey) {
 		throw new MoleculerError('Thông tin mã hóa không chính xác (-2)', 400, null, null);
 	}
@@ -46,7 +54,10 @@ module.exports = async function (req, res, securityURI) {
 	}
 	req.url = uri;
 	req.security = {
+		type: securityConstant.TYPE.RSA,
+		info: _.omit(securityInfo, ['securityType', 'publicKey', 'privateKey']),
 		rsaKey,
 		encryptKey
 	};
+	return true;
 };
