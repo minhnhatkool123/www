@@ -10,11 +10,15 @@ module.exports = function (req, res) {
 	const xAPIValidate = req.headers['x-api-validate'];
 	const ctx = req.$ctx;
 	if (req.security.type === securityConstant.TYPE.CHECKSUM) {
+		let body = _.get(req, 'body', '');
+		if (_.isObject(body)) {
+			body = JSON.stringify(body);
+		}
 		const objValidate = {
 			pathUrl: req.url,
 			method: _.toUpper(req.method),
 			authorization,
-			body: _.get(req, 'body', '')
+			body
 		};
 		const validate = md5(_.values(objValidate).join('') + req.security.secretKey);
 		if (validate !== xAPIValidate) {
