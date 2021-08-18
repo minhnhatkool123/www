@@ -14,7 +14,7 @@ module.exports = async function (req, res, content) {
 				pathUrl: req.url,
 				method: _.toUpper(req.method),
 				accessToken,
-				body: _.get(req, 'body', '')
+				content
 			};
 			const xAPIValidate = md5(_.values(objValidate).join('') + req.security.secretKey);
 			res.setHeader('x-api-validate', xAPIValidate);
