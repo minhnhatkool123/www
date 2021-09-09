@@ -46,6 +46,7 @@
     "nanoid": "^3.1.23",
     "nats": "^1.4.12",
     "node-rsa": "^1.1.1",
+    "path-to-regexp": "^3.1.0",
     "pino": "^6.12.0",
     "pino-elasticsearch": "^6.1.0",
     "redlock": "^4.2.0"

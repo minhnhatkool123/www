@@ -6,8 +6,18 @@ const securityConstant = require('../constants/security.constant');
 
 module.exports = async function (req, res, securityURI) {
 	const ctx = req.$ctx;
-	// Fix nếu xài url có params nếu cần thiết _.find(_.keys(arr), o => _.startsWith(o, '/domain2'))
-	if (process.env.SECURITY === 'false' || securityURI[req.url] === false) return false;
+	if (process.env.SECURITY === 'false') return false;
+	const securityBypass = _.values(securityURI);
+	let securityFlag = true;
+	_.forEach(securityBypass, (v) => {
+		const m = v.exec(req.url);
+		if (m) {
+			securityFlag = false;
+			return false;
+		}
+		return true;
+	});
+	if (securityFlag === false) return false;
 	if (process.env.SECURITY_BYPASS) {
 		if (req.headers.security === process.env.SECURITY_BYPASS) {
 			return false;

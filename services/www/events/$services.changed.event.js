@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const pathToRegexp = require('path-to-regexp');
 
 module.exports = function (ctx) {
 	const actionList = ctx.broker.registry.getActionList({ withActions: true, grouping: true });
@@ -7,8 +8,8 @@ module.exports = function (ctx) {
 	const securityURI = {};
 	_.forEach(rest, (data) => {
 		if (_.has(data, 'action.rest.security')) {
-			if (data.action.rest.security === false) {
-				securityURI[data.action.rest.fullPath] = false;
+			if (data.action.rest.security === false && !securityURI[data.action.rest.fullPath]) {
+				securityURI[data.action.rest.fullPath] = pathToRegexp(data.action.rest.fullPath);
 			}
 		}
 	});
