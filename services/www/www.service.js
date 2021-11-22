@@ -26,15 +26,12 @@ module.exports = {
 			mappingPolicy: 'restrict',
 			authentication: true,
 			authorization: true,
-			auth: {
-				strategies: ['Default'],
-				mode: 'try' // 'required', 'optional', 'try'
-			}
+			auth: false
 		},
 
 		// https://www.apollographql.com/docs/apollo-server/v2/api/apollo-server.html
 		serverOptions: {
-			tracing: false
+			tracing: true
 		}
 	})],
 
