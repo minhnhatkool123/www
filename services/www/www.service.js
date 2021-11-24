@@ -28,7 +28,7 @@ module.exports = {
 			authentication: true,
 			authorization: true,
 			auth: {
-				strategies: ['Bo'],
+				strategies: ['bo'],
 				mode: 'optional' // 'required', 'optional', 'try'
 			},
 		},
