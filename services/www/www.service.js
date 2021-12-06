@@ -1,3 +1,4 @@
+
 const _ = require('lodash');
 const ApiGateway = require('moleculer-web-extends');
 const { ApolloService } = require('moleculer-apollo-server');
@@ -14,10 +15,10 @@ module.exports = {
 	mixins: [ApiGateway, ApolloService({
 
 		// Global GraphQL typeDefs
-		typeDefs: '',
+		typeDefs: require('./graphql/type'),
 
 		// Global resolvers
-		resolvers: {},
+		resolvers: require('./graphql/resolvers'),
 
 		// API Gateway route options
 		routeOptions: {
