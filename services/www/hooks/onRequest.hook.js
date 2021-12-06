@@ -63,6 +63,7 @@ module.exports = async function (req, res, securityURI) {
 		throw new MoleculerError('Thông tin mã hóa không chính xác (-5)', 400, null, null);
 	}
 	req.url = uri;
+	console.log('Decrypted Request', encryptKey, uri);
 	req.security = {
 		type: securityConstant.TYPE.RSA,
 		info: _.omit(securityInfo, ['securityType', 'publicKey', 'privateKey']),

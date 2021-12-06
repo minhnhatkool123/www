@@ -42,6 +42,7 @@ module.exports = function (req, res) {
 			'x-api-message': xAPIMessage
 		};
 		const validate = md5(_.values(objValidate).join('') + encryptKey);
+		console.log('premd5:', _.values(objValidate).join('') + encryptKey, validate, xAPIValidate);
 		if (validate !== xAPIValidate) {
 			throw new MoleculerError('Thông tin mã hóa không chính xác (-7)', 400, null, null);
 		}
@@ -54,6 +55,7 @@ module.exports = function (req, res) {
 		} catch (error) {
 			throw new MoleculerError('Thông tin mã hóa không chính xác (-8)', 400, null, null);
 		}
+		console.log('Decrypted Request Body', encryptKey, body);
 		req.body = body;
 		ctx.meta.security = {
 			type: securityConstant.TYPE.RSA,
