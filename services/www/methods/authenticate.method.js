@@ -11,6 +11,8 @@ module.exports = async function (ctx, route, req, authHandler) {
 	};
 	if (_.has(req, '$action.rest.auth')) {
 		authConf = req.$action.rest.auth;
+		console.log(authConf)
+		//console.log(process.env.ACCESS_TOKEN_SECRET)
 	}
 	if (_.has(route, 'opts.auth')) {
 		authConf = route.opts.auth;
@@ -34,8 +36,11 @@ module.exports = async function (ctx, route, req, authHandler) {
 		action = handler.action;
 
 		try {
-			decoded = jsonWebToken.verify(req.headers.authorization, jwtKey);
+			decoded = jsonWebToken.verify(req.headers.authorization, /*jwtKey*/process.env.ACCESS_TOKEN_SECRET)
+
+
 		} catch (error) {
+			console.log('vao error');
 			decoded = {};
 		}
 		if (decoded) {
@@ -46,6 +51,7 @@ module.exports = async function (ctx, route, req, authHandler) {
 	let isValid = false;
 	switch (authConf.mode) {
 		case 'required':
+			console.log('vao required')
 			if (_.isEmpty(decoded)) {
 				throw new MoleculerError('Thông tin xác thực không hợp lệ', 401, null, null);
 			}
@@ -53,12 +59,18 @@ module.exports = async function (ctx, route, req, authHandler) {
 			break;
 
 		case 'optional':
+			console.log('vao optional')
 			if (_.isEmpty(decoded) && _.has(req, 'headers.authorization')) {
 				throw new MoleculerError('Thông tin xác thực không hợp lệ', 401, null, null);
 			}
 			if (!_.isEmpty(decoded)) {
 				isValid = true;
 			}
+			break;
+		case 'try':
+			console.log('vao try');
+			console.log(decoded);
+			//isValid = true;
 			break;
 		default:
 			break;

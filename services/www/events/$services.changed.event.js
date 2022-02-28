@@ -3,6 +3,7 @@ const pathToRegexp = require('path-to-regexp');
 
 module.exports = function (ctx) {
 	const actionList = ctx.broker.registry.getActionList({ withActions: true, grouping: true });
+	//console.log('listasd', actionList);
 
 	const rest = _.filter(actionList, (data) => _.has(data, 'action.rest.fullPath') && _.has(data, 'action.rest.security'));
 	const securityURI = {};
@@ -15,6 +16,7 @@ module.exports = function (ctx) {
 	});
 
 	const registryAuth = _.filter(actionList, (data) => _.has(data, 'action.registry.auth'));
+	console.log('registryAuth', registryAuth)
 	const auth = {};
 	_.forEach(registryAuth, (data) => {
 		if (_.has(data, 'action.registry.auth.name') && _.has(data, 'action.registry.auth.jwtKey')) {
