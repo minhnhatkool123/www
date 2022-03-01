@@ -146,6 +146,7 @@ module.exports = {
 		authorize: require('./methods/authorize.method')
 	},
 	events: {
+
 		'$services.changed': function (ctx) {
 			instance.securityURI = require('./events/$services.changed.event')(ctx).securityURI;
 			instance.auth = require('./events/$services.changed.event')(ctx).auth;

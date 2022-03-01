@@ -5,6 +5,7 @@ module.exports = function (ctx) {
 	const actionList = ctx.broker.registry.getActionList({ withActions: true, grouping: true });
 	//console.log('listasd', actionList);
 
+
 	const rest = _.filter(actionList, (data) => _.has(data, 'action.rest.fullPath') && _.has(data, 'action.rest.security'));
 	const securityURI = {};
 	_.forEach(rest, (data) => {

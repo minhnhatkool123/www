@@ -5,6 +5,7 @@ const { MoleculerError } = require('moleculer').Errors;
 
 module.exports = async function (ctx, route, req, authHandler) {
 	// if (req.url === '/api/list-aliases') return { credentials: null, isValid: false };
+	console.log('vào authenticate')
 	let authConf = {
 		strategies: ['Default'],
 		mode: 'required' // 'required', 'optional', 'try'
@@ -36,7 +37,7 @@ module.exports = async function (ctx, route, req, authHandler) {
 		action = handler.action;
 
 		try {
-			decoded = jsonWebToken.verify(req.headers.authorization, /*jwtKey*/process.env.ACCESS_TOKEN_SECRET)
+			decoded = jsonWebToken.verify(req.headers.authorization, jwtKey)
 
 
 		} catch (error) {
@@ -68,9 +69,13 @@ module.exports = async function (ctx, route, req, authHandler) {
 			}
 			break;
 		case 'try':
-			console.log('vao try');
-			console.log(decoded);
-			//isValid = true;
+			if (_.isEmpty(decoded) && _.has(req, 'headers.authorization')) {
+				throw new MoleculerError('Thông tin xác thực không hợp lệ', 401, null, null);
+			}
+			isValid = true;
+			break;
+		case 'otp':
+			isValid = false;
 			break;
 		default:
 			break;
