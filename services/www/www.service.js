@@ -1,42 +1,45 @@
-
-const _ = require('lodash');
-const ApiGateway = require('moleculer-web-extends');
-const { ApolloService } = require('moleculer-apollo-server');
-const { MoleculerError } = require('moleculer').Errors;
+const _ = require("lodash");
+const ApiGateway = require("moleculer-web-extends");
+const { ApolloService } = require("moleculer-apollo-server");
+const { MoleculerError } = require("moleculer").Errors;
 
 const instance = {
 	securityURI: {},
-	auth: {}
+	auth: {},
 };
 const securityURI = {};
 
 module.exports = {
-	name: 'api',
-	mixins: [ApiGateway, ApolloService({
+	name: "api",
+	mixins: [
+		ApiGateway,
+		ApolloService({
+			// Global GraphQL typeDefs
+			typeDefs: require("./graphql/type"),
 
-		// Global GraphQL typeDefs
-		typeDefs: require('./graphql/type'),
+			// Global resolvers
+			resolvers: require("./graphql/resolvers"),
 
-		// Global resolvers
-		resolvers: require('./graphql/resolvers'),
+			// API Gateway route options
+			routeOptions: {
+				path: "/graphql",
+				cors: true,
+				mappingPolicy: "restrict",
+				authentication: true,
+				authorization: true,
+				auth: false,
+			},
 
-		// API Gateway route options
-		routeOptions: {
-			path: '/graphql',
-			cors: true,
-			mappingPolicy: 'restrict',
-			authentication: true,
-			authorization: true,
-			auth: false
-		},
+			// https://www.apollographql.com/docs/apollo-server/v2/api/apollo-server.html
+			serverOptions: {
+				tracing: true,
+			},
+		}),
+	],
 
-		// https://www.apollographql.com/docs/apollo-server/v2/api/apollo-server.html
-		serverOptions: {
-			tracing: true
-		}
-	})],
-
-	dependencies: [/* 'security' */],
+	dependencies: [
+		/* 'security' */
+	],
 
 	// More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html
 	settings: {
@@ -48,26 +51,45 @@ module.exports = {
 		customs: {
 			hooks: {
 				async onRequest(req, res) {
-					await require('./hooks/onRequest.hook')(req, res, instance.securityURI);
+					await require("./hooks/onRequest.hook")(
+						req,
+						res,
+						instance.securityURI
+					);
 				},
-				onPreResponse: require('./hooks/onPreResponse.hook'),
-				onHasBody: require('./hooks/onHasBody.hook')
-			}
+				onPreResponse: require("./hooks/onPreResponse.hook"),
+				onHasBody: require("./hooks/onHasBody.hook"),
+			},
 		},
 
 		cors: {
 			// Configures the Access-Control-Allow-Origin CORS header.
-			origin: '*',
+			origin: "*",
 			// Configures the Access-Control-Allow-Methods CORS header.
-			methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
+			methods: ["GET", "OPTIONS", "POST", "PUT", "DELETE"],
 			// Configures the Access-Control-Allow-Headers CORS header.
-			allowedHeaders: ['*', 'Content-Type', 'x-api-key', 'x-api-validate', 'x-api-action', 'x-api-client', 'x-request-id', 'Authorization'],
+			allowedHeaders: [
+				"*",
+				"Content-Type",
+				"x-api-key",
+				"x-api-validate",
+				"x-api-action",
+				"x-api-client",
+				"x-request-id",
+				"Authorization",
+			],
 			// Configures the Access-Control-Expose-Headers CORS header.
-			exposedHeaders: ['*', 'x-api-key', 'x-api-validate', 'x-api-action', 'x-api-client'],
+			exposedHeaders: [
+				"*",
+				"x-api-key",
+				"x-api-validate",
+				"x-api-action",
+				"x-api-client",
+			],
 			// Configures the Access-Control-Allow-Credentials CORS header.
 			credentials: true,
 			// Configures the Access-Control-Max-Age CORS header.
-			maxAge: 3600
+			maxAge: 3600,
 		},
 
 		// Global Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
@@ -75,10 +97,8 @@ module.exports = {
 
 		routes: [
 			{
-				path: '/',
-				whitelist: [
-					'**'
-				],
+				path: "/",
+				whitelist: ["**"],
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
 				use: [],
@@ -96,29 +116,27 @@ module.exports = {
 				// The gateway will dynamically build the full routes from service schema.
 				autoAliases: true,
 
-				aliases: {
-
-				},
+				aliases: {},
 
 				callingOptions: {},
 
 				bodyParsers: {
 					json: {
 						strict: false,
-						limit: '1MB'
+						limit: "1MB",
 					},
 					urlencoded: {
 						extended: true,
-						limit: '1MB'
-					}
+						limit: "1MB",
+					},
 				},
 
 				// Mapping policy setting. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Mapping-policy
-				mappingPolicy: 'restrict', // Available values: "all", "restrict"
+				mappingPolicy: "restrict", // Available values: "all", "restrict"
 
 				// Enable/disable logging
-				logging: true
-			}
+				logging: true,
+			},
 		],
 
 		// Do not log client side errors (does not log an error response when the error.code is 400<=X<500)
@@ -126,30 +144,38 @@ module.exports = {
 		// Logging the request parameters. Set to any log level to enable it. E.g. "info"
 		logRequestParams: null,
 		// Logging the response data. Set to any log level to enable it. E.g. "info"
-		logResponseData: 'null',
+		logResponseData: "null",
 
 		// Serve assets from "public" folder. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Serve-static-files
 		assets: {
-			folder: 'public',
+			folder: "public",
 
 			// Options to `server-static` module
-			options: {}
-		}
+			options: {},
+		},
 	},
 
 	methods: {
-		reformatError: require('./methods/reformatError.method'),
+		reformatError: require("./methods/reformatError.method"),
 		async authenticate(ctx, route, req) {
-			const response = await require('./methods/authenticate.method')(ctx, route, req, instance.auth);
+			const response = await require("./methods/authenticate.method")(
+				ctx,
+				route,
+				req,
+				instance.auth
+			);
 			return response;
 		},
-		authorize: require('./methods/authorize.method')
+		authorize: require("./methods/authorize.method"),
 	},
 	events: {
-
-		'$services.changed': function (ctx) {
-			instance.securityURI = require('./events/$services.changed.event')(ctx).securityURI;
-			instance.auth = require('./events/$services.changed.event')(ctx).auth;
-		}
-	}
+		"$services.changed": function (ctx) {
+			instance.securityURI = require("./events/$services.changed.event")(
+				ctx
+			).securityURI;
+			instance.auth = require("./events/$services.changed.event")(
+				ctx
+			).auth;
+		},
+	},
 };

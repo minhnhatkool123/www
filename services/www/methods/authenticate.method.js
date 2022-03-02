@@ -1,21 +1,21 @@
-const _ = require('lodash');
-const awaitAsyncForeach = require('await-async-foreach');
-const jsonWebToken = require('jsonwebtoken');
-const { MoleculerError } = require('moleculer').Errors;
+const _ = require("lodash");
+const awaitAsyncForeach = require("await-async-foreach");
+const jsonWebToken = require("jsonwebtoken");
+const { MoleculerError } = require("moleculer").Errors;
 
 module.exports = async function (ctx, route, req, authHandler) {
 	// if (req.url === '/api/list-aliases') return { credentials: null, isValid: false };
-	console.log('vào authenticate')
+	console.log("vào authenticate");
 	let authConf = {
-		strategies: ['Default'],
-		mode: 'required' // 'required', 'optional', 'try'
+		strategies: ["Default"],
+		mode: "required", // 'required', 'optional', 'try'
 	};
-	if (_.has(req, '$action.rest.auth')) {
+	if (_.has(req, "$action.rest.auth")) {
 		authConf = req.$action.rest.auth;
-		console.log(authConf)
+		console.log(authConf);
 		//console.log(process.env.ACCESS_TOKEN_SECRET)
 	}
-	if (_.has(route, 'opts.auth')) {
+	if (_.has(route, "opts.auth")) {
 		authConf = route.opts.auth;
 	}
 	if (authConf === false) {
@@ -23,7 +23,12 @@ module.exports = async function (ctx, route, req, authHandler) {
 	}
 
 	if (!_.isArray(authConf.strategies)) {
-		throw new MoleculerError('Invalid auth strategies', 500, null, authConf.strategies);
+		throw new MoleculerError(
+			"Invalid auth strategies",
+			500,
+			null,
+			authConf.strategies
+		);
 	}
 
 	let flagStop = false;
@@ -37,11 +42,9 @@ module.exports = async function (ctx, route, req, authHandler) {
 		action = handler.action;
 
 		try {
-			decoded = jsonWebToken.verify(req.headers.authorization, jwtKey)
-
-
+			decoded = jsonWebToken.verify(req.headers.authorization, jwtKey);
 		} catch (error) {
-			console.log('vao error');
+			console.log("vao error");
 			decoded = {};
 		}
 		if (decoded) {
@@ -51,32 +54,47 @@ module.exports = async function (ctx, route, req, authHandler) {
 	});
 	let isValid = false;
 	switch (authConf.mode) {
-		case 'required':
-			console.log('vao required')
+		case "required":
+			console.log("vao required");
 			if (_.isEmpty(decoded)) {
-				throw new MoleculerError('Thông tin xác thực không hợp lệ', 401, null, null);
+				throw new MoleculerError(
+					"Thông tin xác thực không hợp lệ",
+					401,
+					null,
+					null
+				);
 			}
 			isValid = true;
 			break;
 
-		case 'optional':
-			console.log('vao optional')
-			if (_.isEmpty(decoded) && _.has(req, 'headers.authorization')) {
-				throw new MoleculerError('Thông tin xác thực không hợp lệ', 401, null, null);
+		case "optional":
+			console.log("vao optional");
+			if (_.isEmpty(decoded) && _.has(req, "headers.authorization")) {
+				throw new MoleculerError(
+					"Thông tin xác thực không hợp lệ",
+					401,
+					null,
+					null
+				);
 			}
 			if (!_.isEmpty(decoded)) {
 				isValid = true;
 			}
 			break;
-		case 'try':
-			if (_.isEmpty(decoded) && _.has(req, 'headers.authorization')) {
-				throw new MoleculerError('Thông tin xác thực không hợp lệ', 401, null, null);
-			}
-			isValid = true;
-			break;
-		case 'otp':
-			isValid = false;
-			break;
+		// case "try":
+		// 	if (_.isEmpty(decoded) && _.has(req, "headers.authorization")) {
+		// 		throw new MoleculerError(
+		// 			"Thông tin xác thực không hợp lệ",
+		// 			401,
+		// 			null,
+		// 			null
+		// 		);
+		// 	}
+		// 	isValid = true;
+		// 	break;
+		// case "otp":
+		// 	isValid = false;
+		// 	break;
 		default:
 			break;
 	}

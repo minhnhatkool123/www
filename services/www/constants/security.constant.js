@@ -1,6 +1,6 @@
 module.exports = {
 	TYPE: {
 		RSA: 'RSA',
-		CHECKSUM: 'CHECKSUM'
-	}
+		CHECKSUM: 'CHECKSUM',
+	},
 };
