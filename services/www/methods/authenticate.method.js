@@ -81,20 +81,6 @@ module.exports = async function (ctx, route, req, authHandler) {
 				isValid = true;
 			}
 			break;
-		// case "try":
-		// 	if (_.isEmpty(decoded) && _.has(req, "headers.authorization")) {
-		// 		throw new MoleculerError(
-		// 			"Thông tin xác thực không hợp lệ",
-		// 			401,
-		// 			null,
-		// 			null
-		// 		);
-		// 	}
-		// 	isValid = true;
-		// 	break;
-		// case "otp":
-		// 	isValid = false;
-		// 	break;
 		default:
 			break;
 	}
